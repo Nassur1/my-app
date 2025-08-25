@@ -1,22 +1,59 @@
 import React, { useState } from "react";
 
 function GoalForm({ addGoal }) {
-  const [text, setText] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    targetAmount: "",
+    category: "",
+    deadline: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!text.trim()) return;
-    addGoal({ id: Date.now(), text });
-    setText("");
+    if (!form.name || !form.targetAmount || !form.category || !form.deadline) {
+      alert("Please fill in all fields.");
+      return;
+    }
+    addGoal(form); // 🚫 do not add id here
+    setForm({ name: "", targetAmount: "", category: "", deadline: "" });
   };
 
   return (
     <form onSubmit={handleSubmit} style={styles.form}>
       <input
+        name="name"
         type="text"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="✍️ Enter your goal..."
+        placeholder="Goal name (e.g., Emergency Fund)"
+        value={form.name}
+        onChange={handleChange}
+        style={styles.input}
+      />
+      <input
+        name="targetAmount"
+        type="number"
+        placeholder="Target amount"
+        value={form.targetAmount}
+        onChange={handleChange}
+        style={styles.input}
+      />
+      <input
+        name="category"
+        type="text"
+        placeholder="Category (Travel, Education, …)"
+        value={form.category}
+        onChange={handleChange}
+        style={styles.input}
+      />
+      <input
+        name="deadline"
+        type="date"
+        value={form.deadline}
+        onChange={handleChange}
         style={styles.input}
       />
       <button type="submit" style={styles.button}>Add Goal ➕</button>
@@ -26,13 +63,14 @@ function GoalForm({ addGoal }) {
 
 const styles = {
   form: {
-    display: "flex",
+    display: "grid",
+    gridTemplateColumns: "1fr 160px 160px 180px 140px",
+    gap: "8px",
     marginBottom: "20px",
   },
   input: {
-    flex: 1,
     padding: "10px",
-    borderRadius: "10px 0 0 10px",
+    borderRadius: "10px",
     border: "2px solid #4facfe",
     fontSize: "1rem",
   },
@@ -43,7 +81,7 @@ const styles = {
     color: "white",
     fontWeight: "bold",
     cursor: "pointer",
-    borderRadius: "0 10px 10px 0",
+    borderRadius: "10px",
   },
 };
 
